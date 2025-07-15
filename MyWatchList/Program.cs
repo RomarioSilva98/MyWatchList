@@ -1,19 +1,21 @@
-// Removed the incorrect using directive for Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore
-// and replaced it with the correct namespace for the DatabaseDeveloperExceptionFilter.
-
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Diagnostics;
-
 using MyWatchList.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>(options =>
-   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 //builder.Services.AddDatabaseDeveloperExceptionFilter();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+    DbInitializer.Initialize(context);
+}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -23,7 +25,7 @@ if (!app.Environment.IsDevelopment())
 else
 {
     app.UseDeveloperExceptionPage();
-    //app.UseMigrationsEndPoint();
+   // app.UseMigrationsEndPoint();
 }
 
 app.UseHttpsRedirection();
