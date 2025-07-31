@@ -1,0 +1,64 @@
+﻿@page
+@model MyWatchList.Pages.Obras.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Obra</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Obra.Titulo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Obra.Titulo)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Obra.Sinopse)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Obra.Sinopse)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Obra.NotaMedia)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Obra.NotaMedia)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Obra.PopularidadeDia)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Obra.PopularidadeDia)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Obra.PopularidadeSemana)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Obra.PopularidadeSemana)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Obra.PopularidadeMes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Obra.PopularidadeMes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Obra.PopularidadeAno)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Obra.PopularidadeAno)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Obra.Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>

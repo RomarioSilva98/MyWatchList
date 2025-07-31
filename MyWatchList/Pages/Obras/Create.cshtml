@@ -1,0 +1,82 @@
+﻿@page
+@model MyWatchList.Pages.Obras.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Obra</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Obra.Titulo" class="control-label"></label>
+                <input asp-for="Obra.Titulo" class="form-control" />
+                <span asp-validation-for="Obra.Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Obra.Sinopse" class="control-label"></label>
+                <input asp-for="Obra.Sinopse" class="form-control" />
+                <span asp-validation-for="Obra.Sinopse" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Obra.NotaMedia" class="control-label"></label>
+                <input asp-for="Obra.NotaMedia" class="form-control" />
+                <span asp-validation-for="Obra.NotaMedia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Obra.PopularidadeDia" class="control-label"></label>
+                <input asp-for="Obra.PopularidadeDia" class="form-control" />
+                <span asp-validation-for="Obra.PopularidadeDia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Obra.PopularidadeSemana" class="control-label"></label>
+                <input asp-for="Obra.PopularidadeSemana" class="form-control" />
+                <span asp-validation-for="Obra.PopularidadeSemana" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Obra.PopularidadeMes" class="control-label"></label>
+                <input asp-for="Obra.PopularidadeMes" class="form-control" />
+                <span asp-validation-for="Obra.PopularidadeMes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Obra.PopularidadeAno" class="control-label"></label>
+                <input asp-for="Obra.PopularidadeAno" class="form-control" />
+                <span asp-validation-for="Obra.PopularidadeAno" class="text-danger"></span>
+            </div>
+            <!-- Gêneros -->
+            <div class="form-group">
+                <label>Gêneros (separados por vírgula)</label>
+                <input asp-for="GenerosTexto" class="form-control" />
+            </div>
+
+            <!-- Fotos -->
+            <div class="form-group">
+                <label>URLs de Fotos (uma por linha)</label>
+                <textarea asp-for="FotosTexto" class="form-control" rows="3"></textarea>
+            </div>
+
+            <!-- Vídeos -->
+            <div class="form-group">
+                <label>URLs de Vídeos (uma por linha)</label>
+                <textarea asp-for="VideosTexto" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

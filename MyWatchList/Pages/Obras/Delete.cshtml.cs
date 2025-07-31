@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using MyWatchList.Data;
+using MyWatchList.Models;
+
+namespace MyWatchList.Pages.Obras
+{
+    public class DeleteModel : PageModel
+    {
+        private readonly MyWatchList.Data.AppDbContext _context;
+
+        public DeleteModel(MyWatchList.Data.AppDbContext context)
+        {
+            _context = context;
+        }
+
+        [BindProperty]
+        public Obra Obra { get; set; } = default!;
+
+        public async Task<IActionResult> OnGetAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obra = await _context.Obras.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (obra == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                Obra = obra;
+            }
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obra = await _context.Obras.FindAsync(id);
+            if (obra != null)
+            {
+                Obra = obra;
+                _context.Obras.Remove(Obra);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToPage("./Index");
+        }
+    }
+}
