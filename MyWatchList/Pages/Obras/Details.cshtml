@@ -1,0 +1,58 @@
+﻿@page "{id:int}"
+@model MyWatchList.Pages.Obras.DetailsModel
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var tipo = HttpContextAccessor.HttpContext.Session.GetString("UsuarioTipo");
+    bool isAdmin = tipo == "Admin";
+    ViewData["Title"] = "Detalhes";
+}
+
+<h1>@Model.Obra.Titulo</h1>
+
+<p><strong>Sinopse:</strong> @Model.Obra.Sinopse</p>
+<p><strong>Nota Média:</strong> ⭐ @Model.Obra.NotaMedia</p>
+
+<p>
+    <strong>Popularidade:</strong><br />
+    📅 Dia: @Model.Obra.PopularidadeDia<br />
+    📈 Semana: @Model.Obra.PopularidadeSemana<br />
+    📊 Mês: @Model.Obra.PopularidadeMes<br />
+    📆 Ano: @Model.Obra.PopularidadeAno
+</p>
+
+@if (Model.Obra.Generos.Any())
+{
+    <p><strong>Gêneros:</strong> @string.Join(", ", Model.Obra.Generos.Select(g => g.Nome))</p>
+}
+
+@if (Model.Obra.Fotos.Any())
+{
+    <h3>🖼 Fotos</h3>
+    @foreach (var foto in Model.Obra.Fotos)
+    {
+        <img src="@foto.Url" width="200" style="margin:10px" />
+    }
+}
+
+@if (Model.Obra.Videos.Any())
+{
+    <h3>🎬 Vídeos</h3>
+    @foreach (var video in Model.Obra.Videos)
+    {
+        <video width="320" height="240" controls>
+            <source src="@video.Url" type="video/mp4">
+            Seu navegador não suporta vídeo.
+        </video>
+    }
+}
+
+@if (isAdmin)
+{
+    <p>
+        <a class="btn btn-warning" asp-page="./Edit" asp-route-id="@Model.Obra.Id">✏️ Editar</a>
+        <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@Model.Obra.Id">🗑 Apagar</a>
+    </p>
+}
+
+<p><a class="btn btn-secondary" asp-page="/Index">⬅️ Voltar</a></p>

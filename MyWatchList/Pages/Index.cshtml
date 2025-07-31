@@ -1,10 +1,82 @@
 ﻿@page
-@model IndexModel
-@{
-    ViewData["Title"] = "Home page";
+@model MyWatchList.Pages.IndexModel
+
+<h1>🎬 MyWatchList</h1>
+
+<form method="get" asp-page="/Obras/Index">
+    <input type="text" name="query" placeholder="Buscar obras..." />
+    <button type="submit">Buscar</button>
+</form>
+
+<hr />
+
+@foreach (var (titulo, lista) in new[] {
+    ("📈 Alta Hoje", Model.EmAltaDia),
+    ("📊 Alta na Semana", Model.EmAltaSemana),
+    ("📅 Alta no Mês", Model.EmAltaMes),
+    ("📆 Alta no Ano", Model.EmAltaAno)
+})
+{
+    <h2>@titulo</h2>
+    <div class="catalogo-grid">
+        @foreach (var obra in lista)
+        {
+            <div class="obra-card">
+                <a asp-page="/Obras/Details" asp-route-id="@obra.Id">
+                    <img src="@obra.Fotos.FirstOrDefault()?.Url" width="120" />
+                    <strong>@obra.Titulo</strong>
+                </a>
+                <br />
+                <small>@string.Join(", ", obra.Generos.Select(g => g.Nome))</small><br />
+                <span>⭐ @obra.NotaMedia</span>
+            </div>
+        }
+    </div>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@foreach (var genero in Model.ObrasPorGenero)
+{
+    <h2>🎭 Gênero: @genero.Key</h2>
+    <div class="catalogo-grid">
+        @foreach (var obra in genero.Value)
+        {
+            <div class="obra-card">
+                <a asp-page="/Obras/Details" asp-route-id="@obra.Id">
+                    <img src="@obra.Fotos.FirstOrDefault()?.Url" width="120" />
+                    <strong>@obra.Titulo</strong>
+                </a>
+                <br />
+                <small>@string.Join(", ", obra.Generos.Select(g => g.Nome))</small><br />
+                <span>⭐ @obra.NotaMedia</span>
+            </div>
+        }
+    </div>
+}
+
+<h2>⭐ Atores em Alta</h2>
+<div class="catalogo-grid">
+    @foreach (var ator in Model.AtoresEmAlta)
+    {
+        <div class="obra-card">
+            <img src="@ator.Foto" width="120" />
+            <strong>@ator.Nome</strong><br />
+            <small>@ator.DataNascimento.ToShortDateString()</small>
+        </div>
+    }
 </div>
+
+<style>
+    .catalogo-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .obra-card {
+        width: 140px;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        text-align: center;
+    }
+</style>

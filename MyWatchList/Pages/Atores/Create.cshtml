@@ -1,0 +1,49 @@
+﻿@page
+@model MyWatchList.Pages.Atores.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Ator</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Ator.Nome" class="control-label"></label>
+                <input asp-for="Ator.Nome" class="form-control" />
+                <span asp-validation-for="Ator.Nome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ator.DataNascimento" class="control-label"></label>
+                <input asp-for="Ator.DataNascimento" class="form-control" />
+                <span asp-validation-for="Ator.DataNascimento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ator.Biografia" class="control-label"></label>
+                <input asp-for="Ator.Biografia" class="form-control" />
+                <span asp-validation-for="Ator.Biografia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ator.Foto" class="control-label"></label>
+                <input asp-for="Ator.Foto" class="form-control" />
+                <span asp-validation-for="Ator.Foto" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,53 @@
+﻿@using MyWatchList.Models
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - MyWatchList</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav>
+            <a asp-page="/Index">🏠 Início</a>
+
+            @{
+                var usuarioId = HttpContextAccessor.HttpContext.Session.GetInt32("UsuarioId");
+                var tipo = HttpContextAccessor.HttpContext.Session.GetString("UsuarioTipo");
+            }
+
+            @if (usuarioId != null)
+            {
+                if (tipo == "Admin")
+                {
+                    <a asp-page="/Obras/Index">📋 Obras</a>
+                    <a asp-page="/Obras/Create">➕ Nova Obra</a>
+                }
+                else
+                {
+                    <a asp-page="/Usuarios/MyWatchlist">🎞 Minha Watchlist</a>
+                }
+
+                <a asp-page="/Usuarios/Logout">🚪 Sair</a>
+            }
+            else
+            {
+                <a asp-page="/Usuarios/Login">🔐 Login</a>
+                <a asp-page="/Usuarios/Create">📝 Cadastro</a>
+            }
+        </nav>
+    </header>
+
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
+
+    <footer>
+        <p>&copy; 2025 - MyWatchList</p>
+    </footer>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

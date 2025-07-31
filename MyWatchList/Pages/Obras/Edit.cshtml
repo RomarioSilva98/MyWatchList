@@ -1,0 +1,98 @@
+﻿@page "{id:int}"
+@model MyWatchList.Pages.Obras.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Obra</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+            <input type="hidden" asp-for="Obra.Id" />
+
+            <!-- Campos básicos -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Obra.Titulo" class="control-label"></label>
+                        <input asp-for="Obra.Titulo" class="form-control" />
+                        <span asp-validation-for="Obra.Titulo" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Obra.Sinopse" class="control-label"></label>
+                        <textarea asp-for="Obra.Sinopse" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Obra.Sinopse" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <!-- Popularidade -->
+                    <div class="form-group">
+                        <label asp-for="Obra.NotaMedia" class="control-label"></label>
+                        <input asp-for="Obra.NotaMedia" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Obra.PopularidadeDia" class="control-label"></label>
+                        <input asp-for="Obra.PopularidadeDia" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Obra.PopularidadeSemana" class="control-label"></label>
+                        <input asp-for="Obra.PopularidadeSemana" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gêneros -->
+            <div class="form-group mt-3">
+                <label>Gêneros (separados por vírgula)</label>
+                <input asp-for="GenerosTexto" class="form-control" placeholder="Ex: Ação, Comédia, Drama" />
+                <small class="form-text text-muted">Separe os gêneros com vírgulas</small>
+            </div>
+
+            <!-- Fotos -->
+            <div class="form-group mt-3">
+                <label>URLs de Fotos (uma por linha)</label>
+                <textarea asp-for="FotosTexto" class="form-control" rows="3"
+                          placeholder="Ex: https://exemplo.com/foto1.jpg&#10;https://exemplo.com/foto2.jpg"></textarea>
+                <small class="form-text text-muted">Uma URL por linha</small>
+            </div>
+
+            <!-- Vídeos -->
+            <div class="form-group mt-3">
+                <label>URLs de Vídeos (uma por linha)</label>
+                <textarea asp-for="VideosTexto" class="form-control" rows="3"
+                          placeholder="Ex: https://youtube.com/video1&#10;https://vimeo.com/video2"></textarea>
+                <small class="form-text text-muted">Uma URL por linha</small>
+            </div>
+
+            <div class="form-group mt-4">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary ml-2">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Exemplo de log adicional no cliente
+        document.querySelector('form').addEventListener('submit', function() {
+            console.log('Formulário submetido');
+            console.log('Gêneros:', document.querySelector('[name="GenerosTexto"]').value);
+            console.log('Fotos:', document.querySelector('[name="FotosTexto"]').value);
+            console.log('Vídeos:', document.querySelector('[name="VideosTexto"]').value);
+        });
+    </script>
+}
