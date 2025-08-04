@@ -4,7 +4,10 @@
 
 @{
     var tipo = HttpContextAccessor.HttpContext.Session.GetString("UsuarioTipo");
+    var usuarioId = HttpContextAccessor.HttpContext.Session.GetInt32("UsuarioId");
+    bool isLogado = usuarioId != null;
     bool isAdmin = tipo == "Admin";
+    bool isFilme = Model.Obra.TipoObra == "Filme";
     ViewData["Title"] = "Detalhes";
 }
 
@@ -13,38 +16,225 @@
 <p><strong>Sinopse:</strong> @Model.Obra.Sinopse</p>
 <p><strong>Nota Média:</strong> ⭐ @Model.Obra.NotaMedia</p>
 
-<p>
-    <strong>Popularidade:</strong><br />
-    📅 Dia: @Model.Obra.PopularidadeDia<br />
-    📈 Semana: @Model.Obra.PopularidadeSemana<br />
-    📊 Mês: @Model.Obra.PopularidadeMes<br />
-    📆 Ano: @Model.Obra.PopularidadeAno
-</p>
 
 @if (Model.Obra.Generos.Any())
 {
     <p><strong>Gêneros:</strong> @string.Join(", ", Model.Obra.Generos.Select(g => g.Nome))</p>
 }
-
-@if (Model.Obra.Fotos.Any())
+@if (Model.Obra.Fotos.Any() || Model.Obra.Videos.Any())
 {
-    <h3>🖼 Fotos</h3>
-    @foreach (var foto in Model.Obra.Fotos)
+    <h3>📸 Fotos e Vídeos </h3>
+
+    @if (Model.Obra.Fotos.Any())
     {
-        <img src="@foto.Url" width="200" style="margin:10px" />
+        <div class="mb-3 d-flex flex-wrap">
+            @foreach (var foto in Model.Obra.Fotos)
+            {
+                <img src="@foto.Url" width="200" style="margin:10px" />
+            }
+        </div>
+    }
+
+    @if (Model.Obra.Videos.Any())
+    {
+        <div class="mb-3">
+            @foreach (var video in Model.Obra.Videos)
+            {
+                <video width="400" height="260" controls style="margin:10px">
+                    <source src="@video.Url" type="video/mp4" />
+                    Seu navegador não suporta vídeo.
+                </video>
+            }
+        </div>
     }
 }
 
-@if (Model.Obra.Videos.Any())
+@if (isLogado)
 {
-    <h3>🎬 Vídeos</h3>
-    @foreach (var video in Model.Obra.Videos)
+    <hr />
+    <h4>⭐ Avaliação e Watchlist</h4>
+    <div class="d-flex gap-3 align-items-center">
+        <form method="post" asp-page-handler="Avaliar" class="form-inline">
+            <select asp-for="NotaAvaliacao" class="form-control mr-2">
+                @for (int i = 1; i <= 10; i++)
+                {
+                    <option value="@i">@i ⭐</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-primary">Avaliar</button>
+        </form>
+
+        <form method="post" asp-page-handler="AdicionarWatchlist">
+            <button type="submit" class="btn btn-outline-success">➕ Watchlist</button>
+        </form>
+    </div>
+}
+
+
+@if (!isFilme)
+{
+    <h3>📺 Temporadas & Episódios</h3>
+    @foreach (var temp in Model.Temporadas.OrderBy(t => t.Numero))
     {
-        <video width="320" height="240" controls>
-            <source src="@video.Url" type="video/mp4">
-            Seu navegador não suporta vídeo.
-        </video>
+        <div class="mb-2">
+            <h5>Temporada @temp.Numero</h5>
+            <ul>
+                @foreach (var ep in temp.Episodios.OrderBy(e => e.Numero))
+                {
+                    <li><strong>E@(@ep.Numero)</strong> – @ep.Titulo</li>
+
+                }
+            </ul>
+        </div>
     }
+}
+
+
+
+
+
+@if (Model.Obra.Elenco.Any())
+{
+    <h3>🎭 Elenco</h3>
+    <ul>
+        @foreach (var membro in Model.Obra.Elenco)
+        {
+            <li>@membro.Ator.Nome</li>
+        }
+    </ul>
+}
+
+<h3>📝 Comentários</h3>
+
+@if (isLogado)
+{
+    <h4>💬 Deixe sua opinião</h4>
+    <form method="post" asp-page-handler="Comentar">
+        @if (!isFilme)
+        {
+            <div class="form-group">
+                <label>Status</label>
+                <select asp-for="Status" class="form-control">
+                    <option value="">-- Selecione --</option>
+                    <option value="Assistindo">Assistindo</option>
+                    <option value="Completo">Completo</option>
+                    <option value="Dropado">Dropado</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Progresso</label>
+                <input asp-for="Progresso" class="form-control" placeholder="Ex: até o episódio 3" />
+            </div>
+
+            <div class="form-group">
+                <label>Nota (1–10)</label>
+                <select asp-for="Nota" class="form-control">
+                    <option value="">-- Avaliação --</option>
+                    @for (int i = 1; i <= 10; i++)
+                    {
+                        <option value="@i">@i ⭐</option>
+                    }
+                </select>
+            </div>
+        }
+
+        <div class="form-group">
+            <label>Comentário</label>
+            <textarea asp-for="Texto" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">💬 Enviar comentário</button>
+    </form>
+}
+
+@if (Model.Obra.Comentarios.Any())
+{
+    <h4 class="mt-4">🧾 Comentários</h4>
+    @foreach (var c in Model.Obra.Comentarios.OrderByDescending(c => c.Data))
+    {
+        var isAutor = c.UsuarioId == usuarioId;
+        <div class="border p-2 rounded mb-2" id="comentario-@c.Id">
+            @if (ViewData["EditandoComentarioId"]?.ToString() == c.Id.ToString())
+            {
+                <form method="post" asp-page-handler="SalvarEdicaoComentario" class="mb-2">
+                    <input type="hidden" name="ComentarioId" value="@c.Id" />
+
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="NovoStatus" class="form-control">
+                            <option value="">-- Selecione --</option>
+                            <option value="Assistindo" selected="@(c.Status == "Assistindo")">Assistindo</option>
+                            <option value="Completo" selected="@(c.Status == "Completo")">Completo</option>
+                            <option value="Dropado" selected="@(c.Status == "Dropado")">Dropado</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Progresso</label>
+                        <input name="NovoProgresso" class="form-control" value="@c.Progresso" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nota (1–10)</label>
+                        <select name="NovaNota" class="form-control">
+                            <option value="">-- Avaliação --</option>
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                <option value="@i" selected="@(c.Nota == i)">@i ⭐</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comentário</label>
+                        <textarea name="NovoTexto" class="form-control" rows="3">@c.Texto</textarea>
+                    </div>
+
+                    <div class="mt-2 d-flex gap-2">
+                        <button type="submit" class="btn btn-success btn-sm">💾 Salvar</button>
+                        <a class="btn btn-secondary btn-sm" href="?id=@Model.Obra.Id">❌ Cancelar</a>
+                    </div>
+                </form>
+
+            }
+            else
+            {
+                <p><strong>@c.Usuario?.Nome</strong> em @c.Data.ToString("dd/MM/yyyy HH:mm")</p>
+
+                @if (!isFilme)
+                {
+                    <p>Status: @c.Status</p>
+                    @if (c.Status != "Completo" && !string.IsNullOrEmpty(c.Progresso))
+                    {
+                        <p>Progresso: @c.Progresso</p>
+                    }
+                    @if (c.Nota != null)
+                    {
+                        <p>Nota: @c.Nota ⭐</p>
+                    }
+                }
+
+                <p>@c.Texto</p>
+
+                @if (isAutor)
+                {
+                    <div class="d-flex gap-2">
+                        <form method="post" asp-page-handler="EditarComentario">
+                            <input type="hidden" name="ComentarioId" value="@c.Id" />
+                            <button type="submit" class="btn btn-warning btn-sm">✏️ Editar</button>
+                        </form>
+
+                        <form method="post" asp-page-handler="DeletarComentario">
+                            <input type="hidden" name="comentarioId" value="@c.Id" />
+                            <button class="btn btn-danger btn-sm" onclick="return confirm('Apagar este comentário?')">🗑 Apagar</button>
+                        </form>
+                    </div>
+                }
+            }
+        </div>
+    }
+
 }
 
 @if (isAdmin)
@@ -56,3 +246,4 @@
 }
 
 <p><a class="btn btn-secondary" asp-page="/Index">⬅️ Voltar</a></p>
+
