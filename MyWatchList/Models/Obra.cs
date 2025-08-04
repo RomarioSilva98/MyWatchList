@@ -10,6 +10,8 @@ public class Obra
     public string Sinopse { get; set; }
     public float NotaMedia { get; set; }
 
+    public string TipoObra { get; set; } = string.Empty; // "Filme", "Série", "Anime", etc.
+
     public int PopularidadeDia { get; set; }
     public int PopularidadeSemana { get; set; }
     public int PopularidadeMes { get; set; }
