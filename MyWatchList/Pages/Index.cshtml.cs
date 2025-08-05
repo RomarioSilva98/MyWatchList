@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MyWatchList.Data;
@@ -19,8 +20,27 @@ public class IndexModel : PageModel
     public Dictionary<string, List<Obra>> ObrasPorGenero { get; set; } = new();
     public List<Ator> AtoresEmAlta { get; set; } = new();
 
+    [BindProperty(SupportsGet = true)]
+    public string Query { get; set; }
+
+    public Obra? ObraBuscada { get; set; }
+    public int? UsuarioId { get; set; }
+    public bool IsAdmin { get; set; }
+
+
     public void OnGet()
     {
+        UsuarioId = HttpContext.Session.GetInt32("UsuarioId");
+        IsAdmin = HttpContext.Session.GetString("UsuarioTipo") == "Admin";
+
+        if (!string.IsNullOrWhiteSpace(Query))
+        {
+            ObraBuscada = _context.Obras
+                .Include(o => o.Fotos)
+                .Include(o => o.Generos)
+                .FirstOrDefault(o => o.Titulo.Contains(Query));
+        }
+
         EmAltaDia = GetObras(o => o.PopularidadeDia);
         EmAltaSemana = GetObras(o => o.PopularidadeSemana);
         EmAltaMes = GetObras(o => o.PopularidadeMes);
@@ -40,18 +60,10 @@ public class IndexModel : PageModel
 
         AtoresEmAlta = _context.Atores
             .Include(a => a.Obras)
-                .ThenInclude(oa => oa.Obra)
-            .Select(a => new
-            {
-                Ator = a,
-                Pontos = a.Obras
-                    .Sum(oa => oa.Obra.PopularidadeDia + oa.Obra.PopularidadeSemana + oa.Obra.PopularidadeMes + oa.Obra.PopularidadeAno)
-            })
-            .OrderByDescending(a => a.Pontos)
-            .Take(10)
-            .Select(a => a.Ator)
+            .ThenInclude(oa => oa.Obra)
             .ToList();
     }
+
 
     private List<Obra> GetObras(Func<Obra, int> orderSelector) =>
         _context.Obras
@@ -60,4 +72,27 @@ public class IndexModel : PageModel
             .OrderByDescending(orderSelector)
             .Take(10)
             .ToList();
+
+
+    public async Task<IActionResult> OnPostAdicionarWatchlistAsync(int obraId)
+    {
+        UsuarioId = HttpContext.Session.GetInt32("UsuarioId");
+        if (UsuarioId == null) return RedirectToPage("/Usuarios/Login");
+
+        var existe = await _context.UsuarioObrasWatchlist
+            .AnyAsync(u => u.UsuarioId == UsuarioId && u.ObraId == obraId);
+
+        if (!existe)
+        {
+            _context.UsuarioObrasWatchlist.Add(new UsuarioObraWatchlist
+            {
+                UsuarioId = UsuarioId.Value,
+                ObraId = obraId
+            });
+            await _context.SaveChangesAsync();
+        }
+
+        return RedirectToPage(new { query = Query });
+    }
+
 }
