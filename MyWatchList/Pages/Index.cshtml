@@ -3,12 +3,44 @@
 
 <h1>🎬 MyWatchList</h1>
 
-<form method="get" asp-page="/Obras/Index">
-    <input type="text" name="query" placeholder="Buscar obras..." />
+<form method="get">
+    <input type="text" name="query" value="@Model.Query" placeholder="Buscar obras..." />
     <button type="submit">Buscar</button>
 </form>
 
 <hr />
+
+@if (!string.IsNullOrWhiteSpace(Model.Query))
+{
+    <h2>🔎 Resultado da busca por: "@Model.Query"</h2>
+
+    @if (Model.ObraBuscada != null)
+    {
+        <div class="obra-card mb-3">
+            <a asp-page="/Obras/Details" asp-route-id="@Model.ObraBuscada.Id">
+                <img src="@Model.ObraBuscada.Fotos.FirstOrDefault()?.Url" width="120" />
+                <strong>@Model.ObraBuscada.Titulo</strong>
+            </a>
+            <br />
+            <small>@string.Join(", ", Model.ObraBuscada.Generos.Select(g => g.Nome))</small><br />
+            <span>⭐ @Model.ObraBuscada.NotaMedia</span>
+
+            @if (Model.UsuarioId != null && !Model.IsAdmin)
+            {
+                <form method="post" asp-page-handler="AdicionarWatchlist" asp-route-obraId="@Model.ObraBuscada.Id">
+                    <button class="btn btn-outline-success btn-sm mt-1">➕ Watchlist</button>
+                </form>
+            }
+        </div>
+    }
+    else
+    {
+        <p>Nenhuma obra encontrada com esse nome.</p>
+    }
+
+    <hr />
+}
+
 
 @foreach (var (titulo, lista) in new[] {
     ("📈 Alta Hoje", Model.EmAltaDia),
@@ -29,6 +61,13 @@
                 <br />
                 <small>@string.Join(", ", obra.Generos.Select(g => g.Nome))</small><br />
                 <span>⭐ @obra.NotaMedia</span>
+                @if (Model.UsuarioId != null && !Model.IsAdmin)
+                {
+                    <form method="post" asp-page-handler="AdicionarWatchlist" asp-route-obraId="@obra.Id">
+                        <button type="submit" class="btn btn-outline-success btn-sm mt-1">➕ Watchlist</button>
+                    </form>
+                }
+
             </div>
         }
     </div>
@@ -48,6 +87,13 @@
                 <br />
                 <small>@string.Join(", ", obra.Generos.Select(g => g.Nome))</small><br />
                 <span>⭐ @obra.NotaMedia</span>
+                @if (Model.UsuarioId != null && !Model.IsAdmin)
+                {
+                    <form method="post" asp-page-handler="AdicionarWatchlist" asp-route-obraId="@obra.Id">
+                        <button type="submit" class="btn btn-outline-success btn-sm mt-1">➕ Watchlist</button>
+                    </form>
+                }
+
             </div>
         }
     </div>
@@ -59,7 +105,7 @@
     {
         <div class="obra-card">
             <img src="@ator.Foto" width="120" />
-            <strong>@ator.Nome</strong><br />
+            <a asp-page="/Atores/Details" asp-route-id="@ator.Id"><strong>@ator.Nome</strong></a><br />
             <small>@ator.DataNascimento.ToShortDateString()</small>
         </div>
     }
