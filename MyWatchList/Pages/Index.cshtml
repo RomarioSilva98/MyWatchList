@@ -1,14 +1,6 @@
 ﻿@page
 @model MyWatchList.Pages.IndexModel
 
-<h1>🎬 MyWatchList</h1>
-
-<form method="get">
-    <input type="text" name="query" value="@Model.Query" placeholder="Buscar obras..." />
-    <button type="submit">Buscar</button>
-</form>
-
-<hr />
 
 @if (!string.IsNullOrWhiteSpace(Model.Query))
 {
@@ -112,6 +104,11 @@
 </div>
 
 <style>
+    body {
+        background-color: #000;
+        color: #fff;
+    }
+
     .catalogo-grid {
         display: flex;
         flex-wrap: wrap;
@@ -124,5 +121,8 @@
         border: 1px solid #ccc;
         border-radius: 8px;
         text-align: center;
+        background-color: #111;
+        color: #eee;
     }
 </style>
+
