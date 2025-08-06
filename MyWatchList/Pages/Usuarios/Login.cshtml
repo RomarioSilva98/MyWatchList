@@ -1,19 +1,26 @@
 ﻿@page
 @model MyWatchList.Pages.Usuarios.LoginModel
 
-<h2>🔐 Login</h2>
+<div class="form-container">
+    <h2>🔐 Login</h2>
 
-<form method="post">
-    <label>Email:</label><br />
-    <input asp-for="Email" type="email" required /><br />
+    <form method="post">
+        <label>Email:</label>
+        <input asp-for="Email" type="email" required />
 
-    <label>Senha:</label><br />
-    <input asp-for="Senha" type="password" required /><br />
+        <label>Senha:</label>
+        <input asp-for="Senha" type="password" required />
 
-    <button type="submit">Entrar</button>
-</form>
+        <button type="submit" class="btn btn-warning">Entrar</button>
+    </form>
 
-@if (!string.IsNullOrEmpty(Model.MensagemErro))
-{
-    <p style="color:red;">@Model.MensagemErro</p>
-}
+    @if (!string.IsNullOrEmpty(Model.MensagemErro))
+    {
+        <p style="color:red;">@Model.MensagemErro</p>
+    }
+
+    <p class="mt-2">
+        Não tem conta❓
+        <a asp-page="/Usuarios/Create" class="btn btn-outline-info btn-sm">Cadastre-se</a>
+    </p>
+</div>

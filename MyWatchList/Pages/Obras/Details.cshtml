@@ -11,97 +11,101 @@
     ViewData["Title"] = "Detalhes";
 }
 
-<h1>@Model.Obra.Titulo</h1>
-
-<p><strong>Sinopse:</strong> @Model.Obra.Sinopse</p>
-<p><strong>Nota Média:</strong> ⭐ @Model.Obra.NotaMedia</p>
-
-
-@if (Model.Obra.Generos.Any())
-{
-    <p><strong>Gêneros:</strong> @string.Join(", ", Model.Obra.Generos.Select(g => g.Nome))</p>
-}
-@if (Model.Obra.Fotos.Any() || Model.Obra.Videos.Any())
-{
-    <h3>📸 Fotos e Vídeos </h3>
-
+<!-- OBRA COM FOTO E INFOS -->
+<div class="obra-destaque">
     @if (Model.Obra.Fotos.Any())
     {
-        <div class="mb-3 d-flex flex-wrap">
-            @foreach (var foto in Model.Obra.Fotos)
-            {
-                <img src="@foto.Url" width="200" style="margin:10px" />
-            }
-        </div>
+        <img src="@Model.Obra.Fotos.First().Url" class="obra-capa" />
     }
 
-    @if (Model.Obra.Videos.Any())
-    {
-        <div class="mb-3">
-            @foreach (var video in Model.Obra.Videos)
-            {
-                <video width="400" height="260" controls style="margin:10px">
-                    <source src="@video.Url" type="video/mp4" />
-                    Seu navegador não suporta vídeo.
-                </video>
-            }
-        </div>
-    }
-}
+    <div class="obra-info">
+        <h1>@Model.Obra.Titulo</h1>
+        <p><strong>Sinopse:</strong> @Model.Obra.Sinopse</p>
+        <p><strong>Nota Média:</strong> ⭐ @Model.Obra.NotaMedia</p>
+        @if (Model.Obra.Generos.Any())
+        {
+            <p><strong>Gêneros:</strong> @string.Join(", ", Model.Obra.Generos.Select(g => g.Nome))</p>
+        }
+        @if (isLogado)
+        {
+            
+            <div class="d-flex gap-3 align-items-center">
+                <form method="post" asp-page-handler="Avaliar" class="form-inline">
+                    <select asp-for="NotaAvaliacao" class="form-control mr-2">
+                        @for (int i = 1; i <= 10; i++)
+                        {
+                            <option value="@i">@i ⭐</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-primary">Avaliar</button>
+                </form>
 
-@if (isLogado)
+                <form method="post" asp-page-handler="AdicionarWatchlist">
+                    <button type="submit" class="btn btn-outline-success">➕ Watchlist</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+<!-- FOTOS E VÍDEOS RESTANTES -->
+@if (Model.Obra.Fotos.Count > 1 || Model.Obra.Videos.Any())
 {
-    <hr />
-    <h4>⭐ Avaliação e Watchlist</h4>
-    <div class="d-flex gap-3 align-items-center">
-        <form method="post" asp-page-handler="Avaliar" class="form-inline">
-            <select asp-for="NotaAvaliacao" class="form-control mr-2">
-                @for (int i = 1; i <= 10; i++)
-                {
-                    <option value="@i">@i ⭐</option>
-                }
-            </select>
-            <button type="submit" class="btn btn-primary">Avaliar</button>
-        </form>
-
-        <form method="post" asp-page-handler="AdicionarWatchlist">
-            <button type="submit" class="btn btn-outline-success">➕ Watchlist</button>
-        </form>
+    <h3>📸 Fotos e Vídeos</h3>
+    <div class="midia-grid">
+        @foreach (var foto in Model.Obra.Fotos.Skip(1))
+        {
+            <img src="@foto.Url" width="200" />
+        }
+        @foreach (var video in Model.Obra.Videos)
+        {
+            <video width="260" height="160" controls>
+                <source src="@video.Url" type="video/mp4" />
+                Seu navegador não suporta vídeo.
+            </video>
+        }
     </div>
 }
 
 
+
+
+<!-- TEMPORADAS E EPISÓDIOS -->
 @if (!isFilme)
 {
     <h3>📺 Temporadas & Episódios</h3>
-    @foreach (var temp in Model.Temporadas.OrderBy(t => t.Numero))
-    {
-        <div class="mb-2">
-            <h5>Temporada @temp.Numero</h5>
-            <ul>
-                @foreach (var ep in temp.Episodios.OrderBy(e => e.Numero))
-                {
-                    <li><strong>E@(@ep.Numero)</strong> – @ep.Titulo</li>
+    <select id="temporadaSelect" onchange="mostrarEpisodios()">
+        @foreach (var t in Model.Temporadas.OrderBy(t => t.Numero))
+        {
+            <option value="temp-@t.Id">Temporada @t.Numero</option>
+        }
+    </select>
 
-                }
-            </ul>
-        </div>
+    @foreach (var t in Model.Temporadas.OrderBy(t => t.Numero))
+    {
+        <ul id="temp-@t.Id" class="episodios" style="display:none;">
+            @foreach (var ep in t.Episodios.OrderBy(e => e.Numero))
+            {
+                <li><strong>E@(@ep.Numero)</strong> – @ep.Titulo</li>
+
+            }
+        </ul>
     }
 }
 
 
-
-
-
+<!-- ELENCO -->
 @if (Model.Obra.Elenco.Any())
 {
     <h3>🎭 Elenco</h3>
-    <ul>
+    <div class="elenco-grid">
         @foreach (var membro in Model.Obra.Elenco)
         {
-            <li>@membro.Ator.Nome</li>
+            <div class="ator-card">
+                <img src="@membro.Ator.Foto" />
+                <span>@membro.Ator.Nome</span>
+            </div>
         }
-    </ul>
+    </div>
 }
 
 <h3>📝 Comentários</h3>
@@ -247,3 +251,13 @@
 
 <p><a class="btn btn-secondary" asp-page="/Index">⬅️ Voltar</a></p>
 
+@section Scripts {
+    <script>
+        function mostrarEpisodios() {
+            document.querySelectorAll('.episodios').forEach(e => e.style.display = 'none');
+            const id = document.getElementById('temporadaSelect').value;
+            document.getElementById(id).style.display = 'block';
+        }
+        window.onload = mostrarEpisodios;
+    </script>
+}

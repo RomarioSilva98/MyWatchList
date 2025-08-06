@@ -6,39 +6,45 @@
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"] - MyWatchList</title>
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav>
-            <a asp-page="/Index">🏠 Início</a>
+        <nav class="navbar">
+            <div class="nav-left">
+                <a asp-page="/Index" class="brand">🎬 MyWatchList</a>
+
+                <form method="get" asp-page="/Index" class="search-form">
+                    <input type="text" name="query" placeholder="Buscar obras..." />
+                    <button type="submit">🔍</button>
+                </form>
+            </div>
 
             @{
                 var usuarioId = HttpContextAccessor.HttpContext.Session.GetInt32("UsuarioId");
                 var tipo = HttpContextAccessor.HttpContext.Session.GetString("UsuarioTipo");
             }
 
-            @if (usuarioId != null)
-            {
-                if (tipo == "Admin")
+            <div class="nav-right">
+                @if (usuarioId != null)
                 {
-                    <a asp-page="/Obras/Index">📋 Obras</a>
-                    <a asp-page="/Obras/Create">➕ Nova Obra</a>
+                    <div class="dropdown">
+                        <button class="menu-button">☰</button>
+                        <div class="dropdown-content">
+                            <a asp-page="/Usuarios/Edit" asp-route-id="@usuarioId">👤 Perfil</a>
+                            <a asp-page="/Usuarios/MyWatchlist">📺 Watchlist</a>
+                            <a asp-page="/Usuarios/Logout">🚪 Sair</a>
+                        </div>
+                    </div>
                 }
                 else
                 {
-                    <a asp-page="/Usuarios/MyWatchlist">🎞 Minha Watchlist</a>
+                    <a asp-page="/Usuarios/Login" class="btn-login">🔐 Entrar</a>
                 }
-
-                <a asp-page="/Usuarios/Logout">🚪 Sair</a>
-            }
-            else
-            {
-                <a asp-page="/Usuarios/Login">🔐 Login</a>
-                <a asp-page="/Usuarios/Create">📝 Cadastro</a>
-            }
+            </div>
         </nav>
     </header>
+
 
     <main role="main" class="container">
         @RenderBody()

@@ -48,25 +48,22 @@ namespace MyWatchList.Pages.Usuarios
                 return Page();
             }
 
-            _context.Attach(Usuario).State = EntityState.Modified;
-
-            try
+            var usuarioBanco = await _context.Usuario.FirstOrDefaultAsync(u => u.Id == Usuario.Id);
+            if (usuarioBanco == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UsuarioExists(Usuario.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
-            return RedirectToPage("./Index");
+            // Atualiza manualmente os campos desejados
+            usuarioBanco.Nome = Usuario.Nome;
+            usuarioBanco.Email = Usuario.Email;
+            usuarioBanco.Senha = Usuario.Senha;
+            usuarioBanco.FotoPerfil = Usuario.FotoPerfil;
+            usuarioBanco.Biografia = Usuario.Biografia;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("/Usuarios/Edit", new { id = Usuario.Id });
         }
 
         private bool UsuarioExists(int id)
