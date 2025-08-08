@@ -1,0 +1,86 @@
+﻿@page
+@model MyWatchList.Pages.ListasPersonalizadas.IndexModel
+
+@{
+    ViewData["Title"] = "Minhas Listas";
+}
+
+<div class="page-container">
+    <h1>📚 Minhas Listas Personalizadas</h1>
+
+    @foreach (var lista in Model.ListasDoUsuario)
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <div id="view-@lista.Id">
+                    <h4>@lista.Nome</h4>
+                    <p>@lista.Descricao</p>
+                </div>
+
+                <form method="post" asp-page-handler="EditarLista" id="form-@lista.Id" style="display: none;">
+                    <input type="hidden" name="Id" value="@lista.Id" />
+                    <input name="Nome" class="form-control mb-2" value="@lista.Nome" />
+                    <input name="Descricao" class="form-control mb-2" value="@lista.Descricao" />
+                    <button type="submit" class="btn btn-success btn-sm">Salvar</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEdit(@lista.Id)">Cancelar</button>
+                </form>
+
+                <ul class="lista-obras">
+                    @foreach (var item in lista.Obras)
+                    {
+                        <li>
+                            <span>@item.Obra.Titulo</span>
+                            <form method="post" asp-page-handler="RemoverObra" class="d-inline">
+                                <input type="hidden" name="listaId" value="@lista.Id" />
+                                <input type="hidden" name="obraId" value="@item.ObraId" />
+                                <button type="submit" class="btn btn-sm btn-danger">Remover</button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+
+                <form method="post" asp-page-handler="AdicionarObra" class="inline-form">
+                    <input type="hidden" name="listaId" value="@lista.Id" />
+                    <select name="obraId" class="form-control">
+                        @foreach (var obra in Model.TodasObras)
+                        {
+                            <option value="@obra.Id">@obra.Titulo</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-warning">Adicionar Obra</button>
+                </form>
+
+
+                <div class="acoes-lista">
+                    <button class="btn btn-warning btn-sm" onclick="toggleEdit(@lista.Id)">Editar</button>
+                    <form method="post" asp-page-handler="ExcluirLista" class="d-inline" id="delete-form-@lista.Id">
+                        <input type="hidden" name="Id" value="@lista.Id" />
+                        <button type="button" class="btn btn-danger btn-sm" onclick="confirmarExclusao(@lista.Id)">Excluir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+    <script>
+        function toggleEdit(id) {
+            const form = document.getElementById(`form-${id}`);
+            const view = document.getElementById(`view-${id}`);
+            const isVisible = form.style.display === 'block';
+            form.style.display = isVisible ? 'none' : 'block';
+            view.style.display = isVisible ? 'block' : 'none';
+        }
+
+        function confirmarExclusao(id) {
+            if (confirm("Tem certeza que deseja excluir esta lista?")) {
+                document.getElementById(`delete-form-${id}`).submit();
+            }
+        }
+    </script>
+}
+
+}
+

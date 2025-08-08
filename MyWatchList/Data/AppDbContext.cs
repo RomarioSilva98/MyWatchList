@@ -82,5 +82,6 @@ namespace MyWatchList.Data
 
 
         }
+        public DbSet<ListaPersonalizada> ListaPersonalizada { get; set; } = default!;
     }
 }
