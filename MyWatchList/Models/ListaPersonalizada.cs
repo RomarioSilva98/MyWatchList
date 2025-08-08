@@ -1,4 +1,5 @@
-﻿using MyWatchList.Models;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using MyWatchList.Models;
 
 public class ListaPersonalizada
 {
@@ -7,6 +8,10 @@ public class ListaPersonalizada
     public string Descricao { get; set; }
 
     public int UsuarioId { get; set; }
+
+    [ValidateNever]
     public Usuario Usuario { get; set; }
+
+    [ValidateNever]
     public ICollection<ListaObra> Obras { get; set; }
 }

@@ -55,6 +55,13 @@ namespace MyWatchList.Pages.Obras
             Obra.Fotos = fotos;
             Obra.Videos = videos;
 
+            if (string.IsNullOrWhiteSpace(Obra.TipoObra))
+            {
+                ModelState.AddModelError("Obra.TipoObra", "O tipo da obra é obrigatório.");
+                return Page();
+            }
+
+
             _context.Obras.Add(Obra);
             await _context.SaveChangesAsync();
 

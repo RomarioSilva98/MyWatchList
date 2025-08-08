@@ -11,15 +11,14 @@
 <body>
     <header>
         <nav class="navbar">
-            <div class="nav-left">
-                <a asp-page="/Index" class="brand">🎬 MyWatchList</a>
-
-                <form method="get" asp-page="/Index" class="search-form">
-                    <input type="text" name="query" placeholder="Buscar obras..." />
-                    <button type="submit">🔍</button>
-                </form>
-            </div>
-
+            <div class="page-container navbar-content">
+                <div class="nav-left">
+                    <a asp-page="/Index" class="brand">🎬 MyWatchList</a>
+                    <form method="get" asp-page="/Index" class="search-form">
+                        <input type="text" name="query" placeholder="Buscar obras..." />
+                        <button type="submit">🔍</button>
+                    </form>
+                </div>
             @{
                 var usuarioId = HttpContextAccessor.HttpContext.Session.GetInt32("UsuarioId");
                 var tipo = HttpContextAccessor.HttpContext.Session.GetString("UsuarioTipo");
@@ -33,6 +32,17 @@
                         <div class="dropdown-content">
                             <a asp-page="/Usuarios/Edit" asp-route-id="@usuarioId">👤 Perfil</a>
                             <a asp-page="/Usuarios/MyWatchlist">📺 Watchlist</a>
+
+                            <hr />
+                            @if (tipo == "Admin")
+                            {
+                                <a asp-page="/Obras/Create">🎥 Criar Obra</a>
+                            }
+
+                            <a asp-page="/ListasPersonalizadas/Create">➕ Criar Lista</a>
+                            <a asp-page="/ListasPersonalizadas/Index">📚 Minhas Listas</a>
+
+                            <hr />
                             <a asp-page="/Usuarios/Logout">🚪 Sair</a>
                         </div>
                     </div>

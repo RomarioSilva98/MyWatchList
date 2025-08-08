@@ -1,128 +1,145 @@
 ﻿@page
 @model MyWatchList.Pages.IndexModel
 
+<div class="page-container">
 
-@if (!string.IsNullOrWhiteSpace(Model.Query))
-{
-    <h2>🔎 Resultado da busca por: "@Model.Query"</h2>
-
-    @if (Model.ObraBuscada != null)
+    @if (!string.IsNullOrWhiteSpace(Model.Query))
     {
-        <div class="obra-card mb-3">
-            <a asp-page="/Obras/Details" asp-route-id="@Model.ObraBuscada.Id">
-                <img src="@Model.ObraBuscada.Fotos.FirstOrDefault()?.Url" width="120" />
-                <strong>@Model.ObraBuscada.Titulo</strong>
-            </a>
-            <br />
-            <small>@string.Join(", ", Model.ObraBuscada.Generos.Select(g => g.Nome))</small><br />
-            <span>⭐ @Model.ObraBuscada.NotaMedia</span>
+        <h2>🔎 Resultado da busca por: "@Model.Query"</h2>
 
-            @if (Model.UsuarioId != null && !Model.IsAdmin)
-            {
-                <form method="post" asp-page-handler="AdicionarWatchlist" asp-route-obraId="@Model.ObraBuscada.Id">
-                    <button class="btn btn-outline-success btn-sm mt-1">➕ Watchlist</button>
-                </form>
-            }
-        </div>
+        @if (Model.ObraBuscada != null)
+        {
+            <div class="catalogo-grid">
+                <div class="obra-card">
+                    <a asp-page="/Obras/Details" asp-route-id="@Model.ObraBuscada.Id">
+                        <img src="@Model.ObraBuscada.Fotos.FirstOrDefault()?.Url" />
+                        <strong>@Model.ObraBuscada.Titulo</strong>
+                    </a>
+                    <br />
+                    <small>@string.Join(", ", Model.ObraBuscada.Generos.Select(g => g.Nome))</small><br />
+                    <span>⭐ @Model.ObraBuscada.NotaMedia</span>
+
+                    @if (Model.UsuarioId != null && !Model.IsAdmin)
+                    {
+                        <form method="post" asp-page-handler="AdicionarWatchlist" asp-route-obraId="@Model.ObraBuscada.Id">
+                            <button class="btn btn-outline-success btn-sm mt-1">➕ Watchlist</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <p>Nenhuma obra encontrada com esse nome.</p>
+        }
+
+        <hr />
     }
-    else
-    {
-        <p>Nenhuma obra encontrada com esse nome.</p>
-    }
 
-    <hr />
-}
-
-
-@foreach (var (titulo, lista) in new[] {
+    @foreach (var (titulo, lista) in new[] {
     ("📈 Alta Hoje", Model.EmAltaDia),
     ("📊 Alta na Semana", Model.EmAltaSemana),
     ("📅 Alta no Mês", Model.EmAltaMes),
     ("📆 Alta no Ano", Model.EmAltaAno)
-})
-{
-    <h2>@titulo</h2>
-    <div class="catalogo-grid">
-        @foreach (var obra in lista)
-        {
-            <div class="obra-card">
-                <a asp-page="/Obras/Details" asp-route-id="@obra.Id">
-                    <img src="@obra.Fotos.FirstOrDefault()?.Url" width="120" />
-                    <strong>@obra.Titulo</strong>
-                </a>
-                <br />
-                <small>@string.Join(", ", obra.Generos.Select(g => g.Nome))</small><br />
-                <span>⭐ @obra.NotaMedia</span>
-                @if (Model.UsuarioId != null && !Model.IsAdmin)
-                {
-                    <form method="post" asp-page-handler="AdicionarWatchlist" asp-route-obraId="@obra.Id">
-                        <button type="submit" class="btn btn-outline-success btn-sm mt-1">➕ Watchlist</button>
-                    </form>
-                }
-
-            </div>
-        }
-    </div>
-}
-
-@foreach (var genero in Model.ObrasPorGenero)
-{
-    <h2>🎭 Gênero: @genero.Key</h2>
-    <div class="catalogo-grid">
-        @foreach (var obra in genero.Value)
-        {
-            <div class="obra-card">
-                <a asp-page="/Obras/Details" asp-route-id="@obra.Id">
-                    <img src="@obra.Fotos.FirstOrDefault()?.Url" width="120" />
-                    <strong>@obra.Titulo</strong>
-                </a>
-                <br />
-                <small>@string.Join(", ", obra.Generos.Select(g => g.Nome))</small><br />
-                <span>⭐ @obra.NotaMedia</span>
-                @if (Model.UsuarioId != null && !Model.IsAdmin)
-                {
-                    <form method="post" asp-page-handler="AdicionarWatchlist" asp-route-obraId="@obra.Id">
-                        <button type="submit" class="btn btn-outline-success btn-sm mt-1">➕ Watchlist</button>
-                    </form>
-                }
-
-            </div>
-        }
-    </div>
-}
-
-<h2>⭐ Atores em Alta</h2>
-<div class="catalogo-grid">
-    @foreach (var ator in Model.AtoresEmAlta)
+    })
     {
-        <div class="obra-card">
-            <img src="@ator.Foto" width="120" />
-            <a asp-page="/Atores/Details" asp-route-id="@ator.Id"><strong>@ator.Nome</strong></a><br />
-            <small>@ator.DataNascimento.ToShortDateString()</small>
+        <h2>@titulo</h2>
+        <div class="catalogo-grid">
+            @foreach (var obra in lista)
+            {
+                <div class="obra-card">
+                    <a asp-page="/Obras/Details" asp-route-id="@obra.Id">
+                        <img src="@obra.Fotos.FirstOrDefault()?.Url" />
+                        <strong>@obra.Titulo</strong>
+                    </a>
+                    <br />
+                    <small>@string.Join(", ", obra.Generos.Select(g => g.Nome))</small><br />
+                    <span>⭐ @obra.NotaMedia</span>
+
+                    @if (Model.UsuarioId != null && !Model.IsAdmin)
+                    {
+                        <form method="post" asp-page-handler="AdicionarWatchlist" asp-route-obraId="@obra.Id">
+                            <button type="submit" class="btn btn-outline-success btn-sm mt-1">➕ Watchlist</button>
+                        </form>
+                    }
+                </div>
+            }
         </div>
     }
+
+    @foreach (var genero in Model.ObrasPorGenero)
+    {
+        <h2>🎭 Gênero: @genero.Key</h2>
+        <div class="catalogo-grid">
+            @foreach (var obra in genero.Value)
+            {
+                <div class="obra-card">
+                    <a asp-page="/Obras/Details" asp-route-id="@obra.Id">
+                        <img src="@obra.Fotos.FirstOrDefault()?.Url" />
+                        <strong>@obra.Titulo</strong>
+                    </a>
+                    <br />
+                    <small>@string.Join(", ", obra.Generos.Select(g => g.Nome))</small><br />
+                    <span>⭐ @obra.NotaMedia</span>
+
+                    @if (Model.UsuarioId != null && !Model.IsAdmin)
+                    {
+                        <form method="post" asp-page-handler="AdicionarWatchlist" asp-route-obraId="@obra.Id">
+                            <button type="submit" class="btn btn-outline-success btn-sm mt-1">➕ Watchlist</button>
+                        </form>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    <h2>⭐ Atores em Alta</h2>
+    <div class="catalogo-grid">
+        @foreach (var ator in Model.AtoresEmAlta)
+        {
+            <div class="obra-card">
+                <img src="@ator.Foto" />
+                <a asp-page="/Atores/Details" asp-route-id="@ator.Id"><strong>@ator.Nome</strong></a><br />
+                <small>@ator.DataNascimento.ToShortDateString()</small>
+            </div>
+        }
+    </div>
 </div>
 
 <style>
-    body {
-        background-color: #000;
-        color: #fff;
+    .page-container {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 0 24px;
     }
 
     .catalogo-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 20px;
+        padding: 16px 0;
+        justify-items: center;
     }
 
     .obra-card {
-        width: 140px;
-        padding: 6px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        text-align: center;
         background-color: #111;
+        border: 1px solid #333;
+        border-radius: 10px;
+        padding: 12px;
+        text-align: center;
         color: #eee;
+        transition: transform 0.2s;
+        width: 100%;
+        max-width: 160px;
     }
-</style>
 
+        .obra-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .obra-card img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+</style>
