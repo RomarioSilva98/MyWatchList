@@ -66,6 +66,23 @@ namespace MyWatchList.Pages.Usuarios
             return RedirectToPage("/Usuarios/Edit", new { id = Usuario.Id });
         }
 
+        public async Task<IActionResult> OnPostExcluirAsync(int id)
+        {
+            var usuario = await _context.Usuario.FindAsync(id);
+
+            if (usuario == null)
+                return NotFound();
+
+            _context.Usuario.Remove(usuario);
+            await _context.SaveChangesAsync();
+
+            // Limpa a sessão se o usuário estava logado
+            HttpContext.Session.Clear();
+
+            return RedirectToPage("/Index");
+        }
+
+
         private bool UsuarioExists(int id)
         {
             return _context.Usuario.Any(e => e.Id == id);

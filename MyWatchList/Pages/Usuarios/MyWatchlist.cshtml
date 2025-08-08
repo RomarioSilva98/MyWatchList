@@ -4,34 +4,38 @@
     ViewData["Title"] = "Minha Watchlist";
 }
 
-<h2>🎞 Minha Watchlist</h2>
+<div class="page-container">
+    <h2>🎞 Minha Watchlist</h2>
 
-@if (!Model.Obras.Any())
-{
-    <p>Você ainda não adicionou nenhuma obra à sua watchlist.</p>
-}
-else
-{
-    <div class="row">
-        @foreach (var obra in Model.Obras)
-        {
-            <div class="col-md-4 mb-3">
-                <div class="card">
-                    @if (obra.Fotos.Any())
-                    {
-                        <img src="@obra.Fotos.First().Url" class="card-img-top" style="height: 200px; object-fit: cover;" />
-                    }
+    @if (!Model.Obras.Any())
+    {
+        <p>Você ainda não adicionou nenhuma obra à sua watchlist.</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var obra in Model.Obras)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        @if (obra.Fotos.Any())
+                        {
+                            <img src="@obra.Fotos.First().Url" class="card-img-top" style="height: 200px; object-fit: cover;" />
+                        }
 
-                    <div class="card-body">
-                        <h5 class="card-title">@obra.Titulo</h5>
-                        <p class="card-text">⭐ Nota média: @obra.NotaMedia</p>
-                        <a class="btn btn-primary btn-sm" asp-page="/Obras/Details" asp-route-id="@obra.Id">🔍 Ver</a>
-                        <form method="post" asp-page-handler="Remover" asp-route-obraId="@obra.Id" class="d-inline">
-                            <button class="btn btn-danger btn-sm">❌ Remover</button>
-                        </form>
+                        <div class="card-body">
+                            <h5 class="card-title">@obra.Titulo</h5>
+                            <p class="card-text">⭐ Nota média: @obra.NotaMedia</p>
+                            <a class="btn btn-primary btn-sm" asp-page="/Obras/Details" asp-route-id="@obra.Id">🔍 Ver</a>
+                            <form method="post" asp-page-handler="Remover" asp-route-obraId="@obra.Id" class="d-inline">
+                                <button class="btn btn-danger btn-sm">❌ Remover</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-}
+            }
+        </div>
+    }
+</div>
+
+
