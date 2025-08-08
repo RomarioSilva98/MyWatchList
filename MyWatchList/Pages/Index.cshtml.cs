@@ -70,7 +70,7 @@ public class IndexModel : PageModel
             .Include(o => o.Fotos)
             .Include(o => o.Generos)
             .OrderByDescending(orderSelector)
-            .Take(10)
+            .Take(14)
             .ToList();
 
 

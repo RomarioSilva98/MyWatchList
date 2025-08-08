@@ -216,6 +216,89 @@ body {
     border-radius: 6px;
 }
 
+/* === Atores Pages === */
+.atores-container {
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.4);
+    margin: 20px auto;
+}
+
+.atores-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .atores-table th,
+    .atores-table td {
+        padding: 10px;
+        border-bottom: 1px solid #333;
+        text-align: left;
+    }
+
+    .atores-table th {
+        background-color: #111;
+        color: #f5c518;
+    }
+
+    .atores-table tr:hover {
+        background-color: #222;
+    }
+
+.ator-foto-thumb {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #333;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #258cfb;
+    color: white;
+}
+
+    .btn-primary:hover {
+        background-color: #1b6fb6;
+    }
+
+.btn-warning {
+    background-color: #ffc107;
+    color: black;
+}
+
+    .btn-warning:hover {
+        background-color: #e0a800;
+    }
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+
 /* === Formulários === */
 .form-container {
     max-width: 500px;
