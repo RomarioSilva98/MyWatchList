@@ -7,5 +7,5 @@ public class Ator
     public string Biografia { get; set; }
     public string Foto { get; set; }
 
-    public ICollection<ObraAtor> Obras { get; set; }
+    public ICollection<ObraAtor> Obras { get; set; } = new List<ObraAtor>();
 }

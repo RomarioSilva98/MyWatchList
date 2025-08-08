@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using MyWatchList.Data;
 using MyWatchList.Models;
 
@@ -12,9 +9,9 @@ namespace MyWatchList.Pages.Atores
 {
     public class CreateModel : PageModel
     {
-        private readonly MyWatchList.Data.AppDbContext _context;
+        private readonly AppDbContext _context;
 
-        public CreateModel(MyWatchList.Data.AppDbContext context)
+        public CreateModel(AppDbContext context)
         {
             _context = context;
         }
@@ -24,21 +21,32 @@ namespace MyWatchList.Pages.Atores
             return Page();
         }
 
+        // bind na propriedade Ator (nome dos inputs: Ator.Nome, Ator.Foto, ...)
         [BindProperty]
-        public Ator Ator { get; set; } = default!;
+        public Ator Ator { get; set; } = new(); // inicializa para evitar nulls
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            // Se ModelState inválido mostra erros (e volta pra view)
             if (!ModelState.IsValid)
             {
+                // opcional: log dos erros para debug (se tiver logger)
+                // foreach (var kv in ModelState) { ... }
                 return Page();
             }
 
-            _context.Atores.Add(Ator);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+            try
+            {
+                _context.Atores.Add(Ator);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                // captura erro do banco e mostra no topo da página
+                ModelState.AddModelError(string.Empty, "Erro ao salvar no banco: " + ex.Message);
+                return Page();
+            }
         }
     }
 }
