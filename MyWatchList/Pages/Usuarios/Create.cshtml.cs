@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyWatchList.Data;
+using MyWatchList.Helpers;
 using MyWatchList.Models;
 
 namespace MyWatchList.Pages.Usuarios;
@@ -21,12 +22,11 @@ public class CreateModel : PageModel
 
     public IActionResult OnPost()
     {
-        // ⚠️ Log de tentativa
-        System.Diagnostics.Debug.WriteLine("===> Tentando cadastrar usuário...");
+       
 
         if (!ModelState.IsValid)
         {
-            System.Diagnostics.Debug.WriteLine("===> ModelState inválido:");
+            
             foreach (var entry in ModelState)
             {
                 var key = entry.Key;
@@ -41,11 +41,17 @@ public class CreateModel : PageModel
 
         try
         {
+            if (_context.Usuario.Any(u => u.Email == Usuario.Email))
+            {
+                ModelState.AddModelError("Usuario.Email", "Já existe uma conta com este e-mail.");
+                return Page();
+            }
             Usuario.Tipo = TipoUsuario.Comum;
+            Usuario.Senha = PasswordHelper.HashPassword(Usuario, Usuario.Senha);
             _context.Usuario.Add(Usuario);
             _context.SaveChanges();
 
-            System.Diagnostics.Debug.WriteLine("===> Usuário salvo com sucesso!");
+           
             return RedirectToPage("/Usuarios/Login");
         }
         catch (Exception ex)

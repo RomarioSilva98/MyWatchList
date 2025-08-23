@@ -444,3 +444,21 @@ a.btn-outline-info {
         background-color: #17a2b8;
         color: white;
     }
+
+/* === Textos de validação === */
+.text-danger {
+    color: #dc3545 !important; /* Vermelho do Bootstrap */
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Garantir que os spans de validação sejam visíveis */
+span[class*="validation"] {
+    color: #dc3545 !important;
+}
+
+/* Se houver algum CSS sobreescrevendo */
+.form-container .text-danger {
+    color: #dc3545 !important;
+}
