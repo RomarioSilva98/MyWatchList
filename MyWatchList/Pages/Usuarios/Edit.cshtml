@@ -14,18 +14,17 @@
         </div>
     }
 
-    <form method="post" autocomplete="off">
+    <!-- 🔹 Form de dados básicos -->
+    <form method="post" asp-page-handler="SalvarPerfil" autocomplete="off">
         <input type="hidden" asp-for="Usuario.Id" />
 
         <label>Nome</label>
         <input asp-for="Usuario.Nome" class="form-control" autocomplete="off" />
+        <span asp-validation-for="Usuario.Nome" class="text-danger"></span>
 
         <label>Email</label>
         <input asp-for="Usuario.Email" class="form-control" autocomplete="off" />
-
-        <label>Senha</label>
-        <input asp-for="Usuario.Senha" class="form-control" type="text" autocomplete="off" />
-
+        <span asp-validation-for="Usuario.Email" class="text-danger"></span>
 
         <label>Foto de Perfil (URL)</label>
         <input asp-for="Usuario.FotoPerfil" class="form-control" autocomplete="off" />
@@ -35,16 +34,31 @@
 
         <button type="submit" class="btn btn-warning w-100 mt-3">Salvar Alterações</button>
     </form>
+
+    <hr />
+
+    <!-- 🔹 Form de senha -->
+    <h3>🔑 Alterar Senha</h3>
+    <form method="post" asp-page-handler="AlterarSenha" autocomplete="off">
+        <input type="hidden" asp-for="Usuario.Id" />
+
+        <label>Senha Atual</label>
+        <input asp-for="SenhaAntiga" class="form-control" type="password" autocomplete="off" />
+        <span asp-validation-for="SenhaAntiga" class="text-danger"></span>
+
+        <label>Nova Senha</label>
+        <input asp-for="NovaSenha" class="form-control" type="password" autocomplete="new-password" />
+        <span asp-validation-for="NovaSenha" class="text-danger"></span>
+
+        <button type="submit" class="btn btn-primary w-100 mt-3">Alterar Senha</button>
+    </form>
+
     <form method="post" asp-page-handler="Excluir" onsubmit="return confirm('Tem certeza que deseja excluir sua conta? Esta ação é irreversível.')">
         <input type="hidden" name="id" value="@Model.Usuario.Id" />
         <button type="submit" class="btn btn-danger w-100 mt-2">🗑️ Excluir Conta</button>
     </form>
-
-
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
 }

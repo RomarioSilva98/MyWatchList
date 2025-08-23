@@ -31,6 +31,10 @@ namespace MyWatchList.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Usuario>()
+                .HasIndex(u => u.Email)
+                 .IsUnique();
+
             modelBuilder.Entity<Obra>()
                 .HasDiscriminator<string>("TipoObra")
                 .HasValue<Obra>("Obra")

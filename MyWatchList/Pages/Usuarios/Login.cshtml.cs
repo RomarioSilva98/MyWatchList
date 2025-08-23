@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyWatchList.Data;
 using MyWatchList.Models;
+using MyWatchList.Helpers;
+using MyWatchList.Helpers;
 
 namespace MyWatchList.Pages.Usuarios;
 
@@ -24,11 +26,29 @@ public class LoginModel : PageModel
 
     public IActionResult OnPost()
     {
-        var usuario = _context.Usuario.FirstOrDefault(u => u.Email == Email && u.Senha == Senha);
+        var usuario = _context.Usuario.FirstOrDefault(u => u.Email == Email);
         if (usuario == null)
         {
             MensagemErro = "Email ou senha inválidos.";
             return Page();
+        }
+
+        bool isHash = PasswordHelper.LooksHashed(usuario.Senha);
+        bool ok = isHash
+            ? PasswordHelper.VerifyPassword(usuario, Senha, usuario.Senha)
+            : usuario.Senha == Senha; // compatibilidade com senhas em texto puro
+
+        if (!ok)
+        {
+            MensagemErro = "Email ou senha inválidos.";
+            return Page();
+        }
+
+        // Auto-upgrade: se ainda estava em texto puro, aplica hash agora
+        if (!isHash)
+        {
+            usuario.Senha = PasswordHelper.HashPassword(usuario, Senha);
+            _context.SaveChanges();
         }
 
         var session = _httpContextAccessor.HttpContext.Session;

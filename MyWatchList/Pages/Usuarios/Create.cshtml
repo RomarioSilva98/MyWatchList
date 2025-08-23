@@ -12,6 +12,8 @@
 
         <label asp-for="Usuario.Email"></label>
         <input asp-for="Usuario.Email" class="form-control" type="email" autocomplete="off" />
+    
+
 
         <label asp-for="Usuario.Senha"></label>
         <input asp-for="Usuario.Senha" class="form-control" type="password" autocomplete="new-password" />
@@ -23,6 +25,7 @@
         <input asp-for="Usuario.Biografia" class="form-control" autocomplete="off" />
 
         <button type="submit" class="btn btn-warning mt-2">Cadastrar</button>
+        <span asp-validation-for="Usuario.Email" class="text-danger"></span>
     </form>
 
 
