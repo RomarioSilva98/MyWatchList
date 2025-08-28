@@ -100,7 +100,6 @@ dotnet run</pre>
   <li><b>Models/</b> - Modelos de dados e entidades</li>
   <li><b>Data/</b> - Contexto do banco e configurações</li>
   <li><b>wwwroot/css/</b> - Arquivos de estilização CSS</li>
-  <li><b>wwwroot/js/</b> - Scripts JavaScript</li>
 </ul>
 
 <h3>🗃️ Principais Entidades</h3>
@@ -110,7 +109,7 @@ dotnet run</pre>
   <li><b>Filme/Serie/Anime</b> - Especializações de Obra</li>
   <li><b>Comentario</b> - Avaliações e comentários dos usuários</li>
   <li><b>Ator</b> - Informações sobre celebridades</li>
-  <li><b>ListaPersonalizada</b> - Listas criadas pelos usuários</li>
+  <li><b>WatchList</b> - Lista de Obras que o Usuário Pretende Assistir</li>
 </ul>
 
 <h2>🎯 Funcionalidades Técnicas</h2>
@@ -128,7 +127,6 @@ dotnet run</pre>
 <ul>
   <li>Autenticação e autorização de usuários</li>
   <li>Validação de dados de entrada</li>
-  <li>Proteção contra ataques XSS e CSRF</li>
 </ul>
 
 <h2>👥 Desenvolvido por</h2>
