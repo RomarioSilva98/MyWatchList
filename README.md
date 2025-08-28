@@ -101,7 +101,6 @@ dotnet run</pre>
   <li><b>Data/</b> - Contexto do banco e configurações</li>
   <li><b>wwwroot/css/</b> - Arquivos de estilização CSS</li>
   <li><b>wwwroot/js/</b> - Scripts JavaScript</li>
-  <li><b>wwwroot/images/</b> - Imagens e recursos visuais</li>
 </ul>
 
 <h3>🗃️ Principais Entidades</h3>
@@ -116,12 +115,7 @@ dotnet run</pre>
 
 <h2>🎯 Funcionalidades Técnicas</h2>
 
-<h3>⚡ Performance</h3>
-<ul>
-  <li>Carregamento lazy de imagens</li>
-  <li>Cache de consultas frequentes</li>
-  <li>Paginação de resultados</li>
-</ul>
+
 
 <h3>🎨 Design Responsivo</h3>
 <ul>
